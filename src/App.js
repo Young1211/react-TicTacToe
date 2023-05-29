@@ -11,9 +11,9 @@ function Square({ value, onSquaresClick }) {
 }
 
 //보드판 컴포넌트
-export default function Board() {
-  const [xIsNext, setXIsNext] = useState(true);
-  const [squares, setSquares] = useState(Array(9).fill(null));
+function Board({ xIsNext, squares, onPlay }) {
+  // const [xIsNext, setXIsNext] = useState(true);
+  // const [squares, setSquares] = useState(Array(9).fill(null));
 
   function handleClick(i) {
     //클릭했을 때 발생하는 이벤트
@@ -21,6 +21,7 @@ export default function Board() {
     if (calculateWinner(squares) || squares[i]) {
       return;
     }
+    //복사한 배열
     const nextSquares = squares.slice();
     if (xIsNext) {
       nextSquares[i] = "X";
@@ -28,8 +29,9 @@ export default function Board() {
       //false일 때는
       nextSquares[i] = "O";
     }
-    setSquares(nextSquares);
-    setXIsNext(!xIsNext);
+    // setSquares(nextSquares);
+    // setXIsNext(!xIsNext);
+    onPlay(nextSquares);
   }
   const winner = calculateWinner(squares);
   let status;
@@ -50,7 +52,7 @@ export default function Board() {
       [0, 4, 8],
       [2, 4, 6],
     ];
-    //이차원 배열 돌기 -> 이중 for문 사용
+    //이차원 배열 돌기 ->for문 사용
     for (let i = 0; i < lines.length; i++) {
       //행의 개수 -> i
       const [a, b, c] = lines[i];
@@ -133,5 +135,50 @@ export default function Board() {
         </div>
       </div>
     </>
+  );
+}
+
+export default function Game() {
+  const [history, setHistory] = useState([Array(9).fill(null)]);
+  const [currentMove, setCurrentMove] = useState(0);
+  const xIsNext = currentMove % 2 === 0;
+  const currentSquares = history[currentMove];
+
+  function handlePlay(nextSquares) {
+    //TODO
+    const nextHistory = [...history.slice(0, currentMove + 1), nextSquares];
+    console.log(nextHistory);
+    setHistory(nextHistory);
+    setCurrentMove(nextHistory.length - 1);
+  }
+
+  function jumpTo(nextMove) {
+    //ToDo
+    setCurrentMove(nextMove);
+  }
+  const moves = history.map((squares, move) => {
+    let description;
+    if (move > 0) {
+      description = "Go to move #" + move;
+    } else {
+      description = "Go to game start";
+    }
+    //html 렌더링
+    return (
+      <li key={move}>
+        <button onClick={() => jumpTo(move)}>{description}</button>
+      </li>
+    );
+  });
+
+  return (
+    <div className="game">
+      <div className="game-board">
+        <Board xIsNext={xIsNext} squares={currentSquares} onPlay={handlePlay} />
+      </div>
+      <div className="game-info">
+        <ol>{moves}</ol>
+      </div>
+    </div>
   );
 }

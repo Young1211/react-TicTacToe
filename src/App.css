@@ -1,10 +1,4 @@
 body {
-  height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 20px;
-  box-sizing: border-box;
 }
 
 .status {
@@ -32,4 +26,14 @@ body {
   border: 1px solid rgb(197, 197, 197);
   border-collapse: collapse;
   border-radius: 5px;
+}
+
+/* Game 컴포넌트 */
+.game {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  box-sizing: border-box;
 }
